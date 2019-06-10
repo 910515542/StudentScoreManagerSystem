@@ -51,7 +51,6 @@ void  StatisticAnalysis(STU *head, int n, int m);      //按类别及比例输出
 void topStu(STU *head, int n);						   //查找优等生并保存至文件 
 void failStu(STU *head, int n);						   //查找学生不及格科目并保存至文件 
 void  WritetoFile(STU *head, char filename[20], int n, int m); //将每个学生的纪录信息写入文件
-STU  *ReadfromFile(STU *head, int *n, int *m);         //从文件中读出每个学生的纪录信息并显示
 
 int main()
 {
@@ -213,16 +212,11 @@ int main()
 			break;
 		case 16:
 			system("cls");
-			printf("\t\t\tplease file name:");
+			printf("\t\t\t请在执行相应计算操作后保存至相应文件中，计算、排序后将无法再进行原始数据保存\n");
+			printf("\t\t\tplease file name(原始数据.txt 统计数据.txt 学生综合成绩.txt): ");
 			fflush(stdin);
 			gets(filename);
 			WritetoFile(head, filename, n, m);
-			printf("按任意键继续......");
-			getche();
-			break;
-		case 17:
-			system("cls");  
-			head = ReadfromFile(head, &n, &m);
 			printf("按任意键继续......");
 			getche();
 			break;
@@ -273,7 +267,6 @@ int   Menu(void)
 	printf("\t\t\t*                14. search and save student(s) failling subject             *\n");
 	printf("\t\t\t*                15. print link-lists                                        *\n");
 	printf("\t\t\t*                16. Write to a file                                         *\n");
-	printf("\t\t\t*                17. Read from a file                                        *\n");
 	printf("\t\t\t*                0.  Exit                                                    *\n");
 	printf("\t\t\t******************************************************************************\n");
 	printf("\n");
@@ -959,11 +952,19 @@ void  WritetoFile(STU *head, char filename[20], int n, int m)
 	}
 	else
 	{
-		fprintf(fp, "%-10s\t%-5s\t%-3s\t\t%-3s\t%-3s\t\t%-3s\t\t%-3s\t\t%-3s\n", "course", "sum", "averscore", "<60", "[60,70)", "[70,80)", "[80,90)", ">=90");
-		for(i = 0; i < m; i++)
+		if(strcmp(filename, "统计数据.txt") == 0)
 		{
-			fprintf(fp, "%-10s\t%-5.1f\t%-3.1f\t\t%-3d\t%-3d\t\t%-3d\t\t%-3d\t\t%-3d\n", courseName[i], Course[i].sumscore, Course[i].avescore, Course[i].sectionNum[0],
-													  				 Course[i].sectionNum[1], Course[i].sectionNum[2], Course[i].sectionNum[3], Course[i].sectionNum[4]);
+			fprintf(fp, "%-10s\t%-5s\t%-3s\t\t%-3s\t%-3s\t\t%-3s\t\t%-3s\t\t%-3s\n", "course", "sum", "averscore", "<60", "[60,70)", "[70,80)", "[80,90)", ">=90");
+			for(i = 0; i < m; i++)
+			{
+				fprintf(fp, "%-10s\t%-5.1f\t%-3.1f\t\t%-3d\t%-3d\t\t%-3d\t\t%-3d\t\t%-3d\n", courseName[i], Course[i].sumscore, Course[i].avescore, Course[i].sectionNum[0],
+														  				 Course[i].sectionNum[1], Course[i].sectionNum[2], Course[i].sectionNum[3], Course[i].sectionNum[4]);
+			}
+		}
+		else
+		{
+			printf("filename is wrong!\n");
+			return ;
 		}
 	}
 	{
@@ -974,49 +975,6 @@ void  WritetoFile(STU *head, char filename[20], int n, int m)
 	printf("\t\t\t******************************************************************************\n");
 
 }
-
-/*
-void  ReadfromFile(STU1 stu[], int *n, int *m)
-{
-FILE *fp;
-int i, j;
-printf("\n\n\n");
-printf("\t\t\t******************************************************************************\n");
-if ((fp = fopen("student.txt", "r")) == NULL)
-{
-printf("\t\t\tFail to open student.txt\n");
-return;
-}
-fscanf(fp, "%d\t%d\n", n, m);
-for (i = 0; i<*n; i++)
-{
-fscanf(fp, "%12ld", &stu[i].num);
-fscanf(fp, "%12s", stu[i].name);
-for (j = 0; j<*m; j++)
-{
-fscanf(fp, "%12f", &stu[i].score[j]);
-}
-fscanf(fp, "%12f%12f", &stu[i].sum, &stu[i].aver);
-
-}
-printf("\t\t\tImport Successfully!\n");
-fclose(fp);
-
-
-for (i = 0; i < *n; i++)
-{
-printf("\t\t\t%ld\t%s\t", stu[i].num, stu[i].name);
-for (j = 0; j<*m; j++)
-{
-printf("%.0f\t", stu[i].score[j]);
-}
-printf("%.0f\t%.0f\n", stu[i].sum, stu[i].aver);
-}
-
-printf("\t\t\t******************************************************************************\n");
-
-}
-*/
 
 void topStu(STU *head, int n)
 {
@@ -1143,43 +1101,6 @@ void failStu(STU *head, int n)
 		}
 	}
 	fclose(fp);
-}
-
-//这里用了直接生成了一个新的链表，确保可以直接读取存好的数据
-STU *ReadfromFile(STU *head, int *n, int *m)
-{
-	STU *p;
-	FILE *fp;
-	int i, j;
-	if ((fp = fopen("student.txt", "r")) == NULL)
-	{
-		printf("\t\t\tFail to open student.txt\n");
-		return NULL;
-	}
-	fscanf(fp, "%d\t%d\n", n, m);
-	head = Creat1(*n, *m);  //创建了一个空链表，并且赋给head
-	p = head;
-	for (i = 0; i<*n; i++)
-	{
-		fscanf(fp, "%12ld", &p->num);
-		fscanf(fp, "%12s", &p->name);
-		for (j = 0; j<*m; j++)
-		{
-			fscanf(fp, "%12f", &p->score[j]);
-		}
-		fscanf(fp, "%12f%12f", &p->sum, &p->aver);
-
-		p = p->next;
-
-	}
-	i = *n;
-	j = *m;
-	printf("\t\t\tImport Successfully!\n");
-	fclose(fp);
-
-	Print(head, i, j);
-
-	return head;
 }
 
 
