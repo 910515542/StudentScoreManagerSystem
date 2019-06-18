@@ -11,7 +11,7 @@
 #define   MAX_LEN  10                	   /* 字符串最大长度 */
 #define   STU_NUM 30                       /* 最多的学生人数 */
 #define   COURSE_NUM 6                     /* 最多的考试科目数 */
-#define   LEN sizeof(struct Student)		/*结构体类型字节长度*/ 
+#define   LEN sizeof(struct Student)	   /*结构体类型字节长度*/ 
 
 typedef struct Student
 {
@@ -19,7 +19,7 @@ typedef struct Student
 	char name[MAX_LEN];            	/* 每个学生的姓名 */
 	float score[COURSE_NUM];	    /* 每个学生COURSE_NUM门功课的成绩 */
 	float sum;                      /* 每个学生的总成绩 */
-	float aver;						/* 每个学生的平均成绩 */
+	float aver;					/* 每个学生的平均成绩 */
 	int rankNum;					// 每个学生排名 
 	struct Student *next;
 }STU;
